@@ -1,20 +1,20 @@
-# 默认只打印执行计划，防止误启动全部正式训练。确认后将 dry_run 改为 false。
+# 当前配置会先验证再执行全部启用实验；只查看计划时将 dry_run 改为 true。
 mode: train  # smoke | train | evaluate
 dry_run: false
 evaluate_test: true
 
-checks:
+validations:
   enabled: true
   scripts:
-    - check_torch.py
-    - check_music_datasets.py
-    - check_metrics.py
-    - check_music_dataloaders.py
-    - check_music_model.py
-    - check_music_training.py
-    - check_text_data.py
-    - check_text_training.py
-    - check_training_engine.py
+    - validate_environment.py
+    - validate_music_datasets.py
+    - validate_metrics.py
+    - validate_music_dataloaders.py
+    - validate_music_model.py
+    - validate_music_training.py
+    - validate_text_data.py
+    - validate_text_training.py
+    - validate_training_engine.py
 
 experiments:
   music_mtg_full183:
