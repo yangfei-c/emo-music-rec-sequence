@@ -1,0 +1,54 @@
+seed: 42
+seeds: [42, 43, 44]
+device: cuda
+
+clamp3:
+  repository: third_party/CLaMP3
+  repository_commit: 9016d2b0c8d12d1aa79c2e0ab201e6822bdc83a8
+  checkpoint: artifacts/models/clamp3.pt
+  checkpoint_sha256: 5033f868e3977be3945ee416b5a1718d5589a173c7ba8982231d8c94a6441d80
+  text_model: FacebookAI/xlm-roberta-base
+  embedding_dim: 768
+  max_text_length: 128
+  max_audio_length: 128
+  normalize_embeddings: true
+  freeze_backbone: true
+
+paths:
+  manifest_dir: data/manifests
+  embedding_dir: artifacts/features/clamp3
+  clean_music_dir: artifacts/features/clamp3/clean_music
+  clean_pair_dir: artifacts/features/clamp3/clean_pairs
+  emobank: D:/AAAA_text_va/english/emobank.csv
+  deam_audio: D:/AAAA_audio_dataset/deam/mp3
+  deam_features: D:/AAAA_audio_dataset/deam/mert_30s
+  deam_annotations: D:/AAAA_audio_dataset/deam/meta/static_annotations.csv
+  deam_splits: D:/AAAA_audio_dataset/deam/meta/split
+  pmemo_audio: D:/AAAA_audio_dataset/pmemo/mp3
+  pmemo_features: D:/AAAA_audio_dataset/pmemo/mert_30s
+  pmemo_annotations: D:/AAAA_audio_dataset/pmemo/meta/static_annotations.csv
+  pmemo_splits: D:/AAAA_audio_dataset/pmemo/meta/split
+  mtg_audio: D:/AAAA_audio_dataset/mtg-jamendo/audio
+  mtg_features: D:/AAAA_audio_dataset/mtg-jamendo/MERT_95M_30s
+  mtg_split_dir: D:/AAAA_audio_dataset/mtg-jamendo/splits/split-0/TSV
+  clamp3_precomputed_mert: D:/AAAA_audio_dataset/eval/clamp3/mert
+  clamp3_precomputed_audio_embeddings: D:/AAAA_audio_dataset/eval/clamp3/audio_embd
+  merge_root: data/raw/paired/MERGE/extracted/MERGE_Bimodal_Complete
+  song_describer_root: data/raw/paired/song_describer
+
+data:
+  va_scale: [-1.0, 1.0]
+  emobank_source_scale: [1.0, 5.0]
+  deam_source_scale: [1.0, 9.0]
+  pmemo_source_scale: [1.0, 9.0]
+  merge_source_scale: [0.0, 1.0]
+  batch_size_text_embedding: 32
+  batch_size_audio_embedding: 64
+  num_workers: 0
+
+protocol:
+  name: retraining_20260911
+  song_describer_split: official_mtg_track_split
+  song_describer_role: external_test_only_all_706_tracks_are_mtg_test
+  duplicate_policy: group_to_test_then_validation_then_train
+  test_status: previously_observed_re_evaluation

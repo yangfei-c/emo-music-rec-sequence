@@ -1,0 +1,20 @@
+name: Ours
+run_id: current_route_20260915
+seeds: [42, 43, 44]
+device: cuda
+data:
+  features: artifacts/features/clamp3/text_emobank.npz
+  retriever_runs: artifacts/runs/semantic_preservation_20260914/preserved_multiview
+model:
+  embedding_dim: 768
+training:
+  max_epochs: 60
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  early_stopping_patience: 10
+  early_stopping_min_delta: 0.0001
+  huber_beta: 0.1
+  ccc_weight: 0.1
+  selection_metric: validation_mean_ccc

@@ -1,0 +1,21 @@
+# 第三方来源与使用范围
+
+## 代码与模型
+
+- CLaMP3：上游 https://github.com/sanderwood/clamp3 ，固定提交 `9016d2b0c8d12d1aa79c2e0ab201e6822bdc83a8`。本次为恢复音频提特征，在 `third_party/CLaMP3/preprocessing/audio/` 保留所需 MusicHubert 源文件，完整 MIT 许可证保存在 `third_party/CLaMP3/LICENSE`；不再声称工程完全没有上游源码。
+- CLaMP3 冻结 checkpoint、文本 XLM-R（FacebookAI/xlm-roberta-base）、MERT-v1-95M、Qwen3:4B 各自遵守上游模型许可证。检查点与模型 digest 写入配置，不能用模型名称代替版本校验。
+- MERT 提特征固定 revision `12af15fef9d0ac838c3f475bfbbf26d2060dd4f5`，上游公共模型 `m-a-p/MERT-v1-95M`。针对当前 Transformers 配置新增项仅保持旧模型默认行为，不训练 MERT。
+- GoEmotions 与 NRC-VAD 交集提供27个情绪词的公开词汇坐标，属于固定查询方向参考，不是本项目训练的音乐模型。
+- 2026-09-13 新增的 `clip_style` 对照参照 Gao 等 CLIP-Adapter 的公开模块公式独立实现（双层无偏置 Linear/ReLU，固定 0.2 残差融合）。论文：https://arxiv.org/abs/2110.04544 ；作者代码：https://github.com/gaopengcuhk/CLIP-Adapter/blob/main/clip_adapter.py 。本地改为 CLaMP3 文本、音乐两侧各一个头，采用本项目音乐数据与损失重新训练，属于结构迁移，不能表述为原文精确复现；未使用该论文训练好的权重。
+
+## 数据
+
+当前训练/评价使用 MERGE、MTG-Jamendo、EmoBank、DEAM、PMEmo；Song Describer 只用于跨描述域测试。每个数据集的原始音频、歌词、标注、许可及访问条件均以发布者为准，不将本机可访问等同于获得再分发许可。
+
+MERGE 公开发布包：https://zenodo.org/records/13939205 ；Song Describer：https://zenodo.org/records/10072001 。下载工具只读取公开文件并核验校验和，没有接受限制条款、申请个人权限或绕过访问控制。下载校验见 `data/raw/download_manifest.json`。
+
+外部数据目录未移动，代码备份清理不删除原始音频。不要将含歌词、原始音频、模型权重及真人记录的整个工作目录直接公开上传；发布前分别核对各来源许可与隐私要求。
+
+## 模板与真人记录
+
+汇报模板由用户提供，沿用学校标识和原模板作者信息，不代表学校对算法结论的认可。Web 的历史真人评价不作为软件测试数据，不被删除或覆盖；本次模拟接口测试事件不落入正式研究日志。

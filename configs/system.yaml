@@ -1,0 +1,108 @@
+name: Ours
+task:
+  inputs:
+  - current_affect
+  - target_affect
+  - music_preference
+  output: five_unique_ordered_tracks_or_explicit_failure
+device: cuda
+backbone:
+  model: CLaMP3-SAAS
+  checkpoint: artifacts/models/clamp3.pt
+  checkpoint_sha256: 5033f868e3977be3945ee416b5a1718d5589a173c7ba8982231d8c94a6441d80
+  text_model: FacebookAI/xlm-roberta-base
+  embedding_dim: 768
+  max_text_length: 128
+  frozen: true
+retriever:
+  model: Ours
+  checkpoint: artifacts/releases/current_route_20260915/retriever.pt
+  checkpoint_sha256: e8bb215b7dcbfb644d6899d23cbcdb0c7511f76aad5bb1b5cb41e398e049dd6e
+  bottleneck_dim: 64
+  dropout: 0.1
+  initial_adapter_scale: 0.1
+  factor_weights:
+  - 0.25
+  - 0.4
+  - 0.35
+  top_per_route: 100
+  selected_seed: 42
+  selection_basis: factorwise_balanced_validation_only
+  semantic_output_blend: 0.2
+  training_runs: artifacts/runs/semantic_preservation_20260914/preserved_multiview
+catalog:
+  music: artifacts/releases/current_route_20260915/catalog/music.npz
+  music_sha256: b246a369c45d33d3023e1edefe249943b61405b31432fc750f7e52f198e60505
+  factor_track_ids: artifacts/releases/current_route_20260915/catalog/factor_track_ids.npy
+  factor_track_ids_sha256: 89dec3ff89632ef8130c0f0f24f1577f19fe7a36e3f3ed0bcca51d910a98ee1d
+  metadata: artifacts/releases/current_route_20260915/catalog/metadata.npz
+  metadata_sha256: 6ffdf2d8be67841a489e651581e783040b0e04526d96d94cc3f959a74dd3d9f6
+  factors:
+    semantic:
+      path: artifacts/releases/current_route_20260915/catalog/semantic.npy
+      sha256: e0a7f7dd61ae49c01fc1aa29620717c5ff99d5b7d90655e1aee24afeb631d297
+    affect:
+      path: artifacts/releases/current_route_20260915/catalog/affect.npy
+      sha256: ef1878279479b0b6d522323349f69fe77c6c8177407d2b822836387de9a0ad41
+    preference:
+      path: artifacts/releases/current_route_20260915/catalog/preference.npy
+      sha256: 819ec0e75ee228d2fb891e0893156edce38c48a34e3115ba58165705a417fc91
+affect_direction:
+  public_terms: artifacts/catalog/affect_terms.npz
+  public_terms_sha256: a93d0302b432063916ae225e38672d846db635c91e258ea7383c261811a8f9bf
+  tolerance: 0.1
+  unknown_text_fallback: emobank_text_va
+endpoint:
+  matcher: Ours
+  start_top: 20
+  target_top: 20
+  allow_overlap: true
+relation:
+  model: calibrated_regression_ensemble
+  hidden_dim: 128
+  dropout: 0.1
+  seeds:
+  - 42
+  - 43
+  - 44
+  checkpoint_template: artifacts/releases/current_route_20260915/music_va/seed_{seed}.pt
+  calibration_template: artifacts/releases/current_route_20260915/music_va/seed_{seed}.calibration.json
+  checkpoints_sha256:
+    42: 9d43610526aea4b44ba02bd275e6b23b028b0cf708fe9b2465aa96d4fb981a21
+    43: a64f1f11d8bf58a3b7a8390a2db270c585684260ee1a0fc953602f8099d70e8a
+    44: ad75201e27dbf8b3f361076767dd7d12f7a524453d96e49a4ca0e70970152440
+  calibration_sha256:
+    42: 8a30bd52fa0d49b01710b8399e2c82a2fc611b42266a81da61024ba32a096caf
+    43: 8a30bd52fa0d49b01710b8399e2c82a2fc611b42266a81da61024ba32a096caf
+    44: 8a30bd52fa0d49b01710b8399e2c82a2fc611b42266a81da61024ba32a096caf
+  seed_reduction: minimum
+  axis_reduction: minimum
+search:
+  objective: mean_adjacent_edge
+  sequence_length: 5
+  search_width: 50
+  preference_threshold: 0.8
+  endpoint_threshold: 0.5
+  edge_threshold: 0.4
+  fallback: preference_then_target
+  deterministic_tie_break: true
+run_id: current_route_20260915
+query_parser:
+  model: qwen3:4b
+  base_url: http://127.0.0.1:11434
+  expected_digest: 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+  strict_digest: true
+  timeout_seconds: 120
+  seed: 42
+  frozen: true
+  missing_target: calm_explicit_default
+  missing_preference: no_preference_constraint
+text_va:
+  checkpoint: artifacts/releases/current_route_20260915/text_va.pt
+  checkpoint_sha256: c53e4c8f7eed69649779a4cdc9282cc580ebb9fee8900b811ee3e1cc68713de9
+  selected_seed: 44
+  selection_basis: validation_mean_ccc_only
+  input: selected_frozen_text_affect_adapter
+  target_scale:
+  - -1
+  - 1

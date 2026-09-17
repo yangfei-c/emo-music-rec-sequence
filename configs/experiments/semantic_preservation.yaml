@@ -1,0 +1,49 @@
+name: Ours semantic preservation experiment
+protocol_version: 2026-09-14
+base_training_config: configs/training/retriever.yaml
+output_root: artifacts/runs/semantic_preservation_20260914
+generated_config_root: results/semantic_preservation_20260914/configs
+
+# Stage 1 is validation-only.  It isolates geometry preservation and then adds
+# train-only lyric views; Song Describer remains external test-only throughout.
+variants:
+  - id: original_global
+    semantic_output_blend: 1.0
+    semantic_distillation_weight: 0.0
+    use_merge_views: false
+  - id: preserved_global
+    semantic_output_blend: 0.2
+    semantic_distillation_weight: 0.5
+    use_merge_views: false
+  - id: preserved_multiview
+    semantic_output_blend: 0.2
+    semantic_distillation_weight: 0.5
+    use_merge_views: true
+
+semantic_pairs:
+  base:
+    - artifacts/features/clamp3/clean/pairs_merge_clean.npz
+    - artifacts/features/clamp3/clean/pairs_song_describer_clean.npz
+  merge_train_views:
+    - artifacts/features/clamp3/augmentation/merge_train_views/rank_1.npz
+    - artifacts/features/clamp3/augmentation/merge_train_views/rank_2.npz
+
+fixed_overrides:
+  supervision:
+    mtg_factors: artifacts/features/clamp3/clean/mtg_factor_supervision_mapped.npz
+  loss:
+    text_va_weight: 0.0
+    music_va_weight: 0.0
+  training:
+    semantic_pair_sampling: once
+  evaluation:
+    selection_metric: factorwise_balanced_retrieval
+    test_once: false
+
+# Stage 2 adds no parameters.  Tune these only on the validation split, lock
+# one setting, then evaluate the external test split once.
+dense_reranking:
+  segment_catalog: artifacts/features/clamp3/segments/pair_tracks.npz
+  local_weights: [0.0, 0.1, 0.2, 0.3]
+  temperatures: [0.03, 0.07, 0.1]
+  top_k: [1, 2, 3]

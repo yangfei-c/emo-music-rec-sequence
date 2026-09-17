@@ -1,66 +1,73 @@
-# Python
+# Python caches and build artifacts
 __pycache__/
 *.py[cod]
 *.egg-info/
-dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 build/
+dist/
 *.egg
 
-# Virtual environments
+# Local environments, IDE settings and secrets
+.venv/
 venv/
 env/
-.venv/
-
 .idea/
-
-# Environment & secrets
 .env
 *.env
 configs/local*.yaml
 credentials.json
 .netrc
 
-# Data (ignore everything, optionally keep a small sample)
-data/
-!data/sample/
-!src/data/
-!src/data/*.py
-# If you want to keep certain small files, use:
-# !data/sample/*.csv
-
-# Preprocessed features
-features/
+# Local datasets, features, models and generated experiment output
+/data/
+/features/
+/artifacts/
+/results/
+/outputs/
+/checkpoints/
+/logs/
+/runs/
+/wandb/
+/mlruns/
+/lightning_logs/
+*.tfevents.*
+*.log
 *.npy
-*.h5
-*.pkl
-# except if intentionally small demo file
-!demo.pkl
-
-# Model weights & checkpoints
-*.pth
-*.pt
-*.ckpt
+*.npz
 *.h5
 *.hdf5
+*.pkl
+*.parquet
+*.pt
+*.pth
+*.ckpt
 *.keras
 *.onnx
-saved_model/
-checkpoints/
-lightning_logs/
 best_model*
-last.ckpt
+saved_model/
 
-# Training logs
-logs/
-runs/
-wandb/
-mlruns/
-*.tfevents.*
-outputs/
-results/*.csv
+# Presentation materials and non-source deliverables
+/PPT_汇报材料/
+*.ppt
+*.pptx
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
 
-# Misc
-*.log
-*.aux
-*.bbl
-*.blg
+# Local media files (source code and configuration remain trackable)
+*.wav
+*.mp3
+*.flac
+*.mp4
+*.mov
