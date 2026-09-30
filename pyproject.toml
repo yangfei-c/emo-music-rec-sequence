@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "emomm-sequence"
 version = "1.0.0"
-description = "Text-driven music sequencing: training, evaluation, retrieval and deployment"
+description = "Text-driven music sequencing: training, evaluation and retrieval"
 requires-python = ">=3.10"
 dependencies = [
   "numpy>=2.0",
@@ -14,12 +14,13 @@ dependencies = [
   "transformers==4.57.6",
   "sentencepiece>=0.2",
   "requests>=2.31",
+  "psutil>=5.9",
 ]
 
 [project.optional-dependencies]
 training = ["pandas>=2.2", "scikit-learn>=1.5", "librosa>=0.10", "nnAudio>=0.3", "soundfile>=0.12", "tqdm>=4.66"]
 dev = ["pytest==8.3.5"]
-report = ["lxml>=5.0", "Pillow>=10"]
+report = ["lxml>=5.0", "Pillow>=10", "matplotlib>=3.8,<4", "PyMuPDF>=1.24,<2", "scipy>=1.14"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

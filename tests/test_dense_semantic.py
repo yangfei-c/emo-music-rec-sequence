@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 from emomm_sequence.encoding.clamp3 import Clamp3TextAudioEncoder
-from emomm_sequence.retrieval.model import RetrieverModel
+from emomm_sequence.models.retriever import RetrieverModel
 from emomm_sequence.retrieval.segments import query_conditioned_segment_similarity
 
 

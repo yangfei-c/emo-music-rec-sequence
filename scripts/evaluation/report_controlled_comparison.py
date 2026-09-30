@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT = ROOT / "results/controlled_comparison_20260913"
+REPORT = ROOT / "artifacts/runs/controlled_comparison_20260913/evaluation"
 RUNS = ROOT / "artifacts/runs/controlled_comparison_20260913"
 
 
@@ -146,7 +146,7 @@ def main():
               "2. python scripts/training/run_controlled_comparison.py --run（全新输出目录；现有实验目录禁止覆盖）",
               "3. python scripts/evaluation/evaluate_controlled_comparison.py",
               "4. python scripts/evaluation/report_controlled_comparison.py", "",
-              "全部原始指标见 summary.json 和 evaluations/；文献版本、任务差异及来源见 PPT_汇报材料/参考资料/对比文献_20260913/文献核验与术语.md。",
+              "全部原始指标见 summary.json 和 evaluations/。",
               "",
     ]
     (REPORT / "实验结果与解释.md").write_text("\n".join(lines), encoding="utf-8")

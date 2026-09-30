@@ -1,5 +1,5 @@
 # Selected route: mapped MTG + train-only MERGE views + semantic preservation.
-# Historical experiment configs remain in results/ for reproducibility.
+# Historical experiment configs remain with their artifacts/runs records.
 name: Ours
 run_id: current_route_20260915
 seed: 42

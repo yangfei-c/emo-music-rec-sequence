@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+.ipynb_checkpoints/
 .mypy_cache/
 .ruff_cache/
 .coverage
@@ -16,8 +17,17 @@ dist/
 venv/
 env/
 .idea/
+.vscode/
+.fleet/
+.history/
+.vs/
+.Rproj.user/
 .env
 *.env
+*.swp
+*.swo
+*.tmp
+*.bak
 configs/local*.yaml
 credentials.json
 .netrc
@@ -45,13 +55,26 @@ credentials.json
 *.pt
 *.pth
 *.ckpt
+*.safetensors
+*.bin
 *.keras
 *.onnx
+*.arrow
+*.feather
+*.zip
+*.7z
+*.tar
+*.tar.gz
 best_model*
 saved_model/
 
 # Presentation materials and non-source deliverables
-/PPT_汇报材料/
+/PPT_汇报/
+# PPT generation: extracted chart data and finalizer staging directories
+/.chart-data-*/
+/.codex-finalizer/
+# Decks, reference figures, previews and build records are covered by
+# /PPT_汇报/ and /artifacts/ above.
 *.ppt
 *.pptx
 *.pdf

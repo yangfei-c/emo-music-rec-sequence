@@ -25,6 +25,7 @@ from emomm_sequence.encoding.clamp3 import (
     collate_audio_tokens,
     load_audio_tokens,
 )
+from emomm_sequence.data.paths import resolve_feature_path
 from emomm_sequence.training.utilities import load_yaml
 
 
@@ -119,7 +120,7 @@ def encode_audio_rows(
         if precomputed is not None:
             cache[identity] = precomputed
         else:
-            pending.append((identity, str(frame.iloc[index]["feature_path"])))
+            pending.append((identity, str(resolve_feature_path(frame.iloc[index]["feature_path"]))))
     for start in tqdm(range(0, len(pending), batch_size), desc="CLaMP3 audio", unit="batch"):
         batch_items = pending[start : start + batch_size]
         tokens = [load_audio_tokens(path, max_length=max_length) for _, path in batch_items]

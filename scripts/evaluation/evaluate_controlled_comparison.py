@@ -15,11 +15,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts/evaluation"))
 from evaluate_retrieval import evaluate, load_npz, project
-from emomm_sequence.retrieval.model import RetrieverModel
+from emomm_sequence.models.retriever import RetrieverModel
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.utilities import load_yaml
 
-REPORT = ROOT / "results/controlled_comparison_20260913"
+REPORT = ROOT / "artifacts/runs/controlled_comparison_20260913/evaluation"
 RUNS = ROOT / "artifacts/runs/controlled_comparison_20260913"
 
 

@@ -30,6 +30,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from emomm_sequence.data.audio import select_front_middle_end
+from emomm_sequence.data.paths import resolve_feature_path
 
 
 MODEL_ID = "m-a-p/MERT-v1-95M"
@@ -157,7 +158,7 @@ def main() -> None:
         if args.split:
             frame = frame[frame["split"].astype(str) == args.split]
         jobs = [
-            (Path(row.audio_path).resolve(), Path(row.feature_path).resolve())
+            (Path(row.audio_path).resolve(), resolve_feature_path(row.feature_path))
             for row in frame.itertuples(index=False)
         ]
         input_root = manifest

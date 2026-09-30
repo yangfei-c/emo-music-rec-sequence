@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from emomm_sequence.evaluation.pairs import grouped_retrieval_metrics
 from emomm_sequence.evaluation.retrieval import label_to_track_metrics
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.utilities import load_yaml
 

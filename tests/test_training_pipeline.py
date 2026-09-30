@@ -3,14 +3,12 @@ import numpy as np
 import pytest
 import torch
 
-from emomm_sequence.losses import VALoss
-from emomm_sequence.relation import RegressionRelation, relation_log_probabilities
-from emomm_sequence.retrieval.model import RetrieverModel, FACTORS
-from emomm_sequence.retrieval.objectives import symmetric_multi_positive_info_nce
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.losses.va import VALoss
+from emomm_sequence.models.retriever import RetrieverModel, FACTORS
+from emomm_sequence.losses.retrieval import symmetric_multi_positive_info_nce
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import check_identity_splits, state_sha256
-from emomm_sequence.training.pairs import build_pair_batch, training_thresholds
-from emomm_sequence.query import NaturalLanguageQueryParser, QueryParsingError
+from emomm_sequence.inference.query import NaturalLanguageQueryParser, QueryParsingError
 
 
 def test_training_changes_every_adapter_and_roundtrips(tmp_path):
@@ -36,28 +34,13 @@ def test_training_changes_every_adapter_and_roundtrips(tmp_path):
         torch.testing.assert_close(model.eval().text_adapters[factor](x), loaded.encode_text(factor, x))
 
 
-def test_va_head_can_train_and_probability_is_normalized():
-    torch.manual_seed(7)
-    model = RegressionRelation(embedding_dim=16, hidden_dim=8, dropout=0)
-    x, target = torch.randn(12, 16), torch.rand(12, 2)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=.003)
-    before = state_sha256(model)
-    loss = VALoss(beta=.1, ccc_weight=.1)(model.coordinates(x), target)
-    loss.backward()
-    optimizer.step()
-    assert torch.isfinite(loss) and state_sha256(model) != before
-    delta = model.coordinates(x)[1:] - model.coordinates(x)[:-1]
-    p = relation_log_probabilities(delta, torch.tensor([.03, .03]), torch.tensor([.20, .20]), torch.tensor([.1, .1])).exp()
-    torch.testing.assert_close(p.sum(-1), torch.ones(11, 2))
-
-
 def test_identity_overlap_rejected():
     with pytest.raises(ValueError, match="crosses"):
         check_identity_splits(np.asarray(["song", "song"]), np.asarray(["train", "test"]), "unit")
 
 
 def test_text_va_training_roundtrip_and_retriever_binding(tmp_path):
-    from emomm_sequence.text_va import TextVAHead, load_text_va
+    from emomm_sequence.models.text_va import TextVAHead, load_text_va
     model = TextVAHead(16)
     x, y = torch.randn(12, 16), torch.rand(12, 2) * 2 - 1
     before = state_sha256(model)
@@ -74,17 +57,6 @@ def test_text_va_training_roundtrip_and_retriever_binding(tmp_path):
     assert not any(p.requires_grad for p in loaded.parameters())
     with pytest.raises(ValueError, match="different affect Adapter"):
         load_text_va(path, "obsolete")
-
-
-def test_pairs_stay_in_partition_and_source():
-    rng = np.random.default_rng(42)
-    targets = rng.random((40, 2))
-    splits = np.asarray(["train"] * 10 + ["test"] * 10 + ["train"] * 10 + ["test"] * 10)
-    sources = np.asarray(["deam"] * 20 + ["pmemo"] * 20)
-    batch = build_pair_batch(targets, sources, splits, rng.normal(size=(40, 8)), training_thresholds(targets, sources, splits), partition="test", seed=42)
-    assert (splits[batch.left] == "test").all()
-    assert (splits[batch.right] == "test").all()
-    assert np.array_equal(sources[batch.left], sources[batch.right])
 
 
 def test_short_request_does_not_invent_preference(monkeypatch):

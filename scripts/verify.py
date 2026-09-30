@@ -1,4 +1,4 @@
-"""Verify the frozen assets, catalog alignment, and clean project manifest."""
+"""Verify selected assets, catalog alignment, and source-code provenance."""
 
 from __future__ import annotations
 
@@ -44,13 +44,11 @@ def expected_assets(config: dict) -> list[tuple[str, str]]:
         ),
     ]
     assets.extend((item["path"], item["sha256"]) for item in config["catalog"]["factors"].values())
-    relation = config["relation"]
-    for seed in relation["seeds"]:
-        hashes = relation["checkpoints_sha256"]
-        assets.append((relation["checkpoint_template"].format(seed=seed), hashes.get(seed, hashes.get(str(seed)))))
-        calibration_hashes = relation["calibration_sha256"]
-        calibration_hash = calibration_hashes.get(seed, calibration_hashes.get(str(seed))) if isinstance(calibration_hashes, dict) else calibration_hashes
-        assets.append((relation["calibration_template"].format(seed=seed), calibration_hash))
+    route = config["route2"]
+    assets.extend((
+        (route["checkpoint"], route["checkpoint_sha256"]),
+        (route["calibration"], route["calibration_sha256"]),
+    ))
     return assets
 
 
@@ -61,12 +59,9 @@ def project_manifest() -> list[dict]:
         ROOT / "scripts",
         ROOT / "src",
         ROOT / "tests",
-        ROOT / "results",
-        ROOT / "PPT_汇报材料" / "制作脚本",
     ]
-    # One detailed method guide; mandatory attribution remains in NOTICE.
+    # Keep this source snapshot separate from generated results and presentations.
     for path in [
-        ROOT / "PPT_汇报材料/方法说明/EmoMM-Sequence_完整方法训练与案例说明.md",
         ROOT / "NOTICE",
         ROOT / "pyproject.toml",
         ROOT / "requirements.txt",
@@ -91,8 +86,8 @@ def project_manifest() -> list[dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/system.yaml")
-    parser.add_argument("--output", default="results/verification.json")
+    parser.add_argument("--config", default="configs/system_route2.yaml")
+    parser.add_argument("--output", default="artifacts/runs/route2_uncertainty_20260926/evaluation/verification.json")
     args = parser.parse_args()
 
     config_path = ROOT / args.config

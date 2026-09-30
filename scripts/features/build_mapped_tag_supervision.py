@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from emomm_sequence.data.tags import tag_prompt, tag_query_views
-from emomm_sequence.encoder import FrozenTextEncoder
+from emomm_sequence.encoding.text import FrozenTextEncoder
 from emomm_sequence.training.records import sha256, write_json
 
 

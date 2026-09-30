@@ -22,7 +22,7 @@ from emomm_sequence.training.records import sha256, write_json
 
 RUN = "controlled_comparison_20260913"
 OUT = ROOT / "artifacts/runs" / RUN
-REPORT = ROOT / "results" / RUN
+REPORT = ROOT / "artifacts/runs" / RUN / "evaluation"
 VARIANTS = {
     "no_va": {"text_va_weight": 0.0, "music_va_weight": 0.0},
     "text_va": {"text_va_weight": 0.25, "music_va_weight": 0.0},

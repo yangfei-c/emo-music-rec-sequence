@@ -1,0 +1,90 @@
+name: Route2-CQR-Robust
+task:
+  inputs:
+  - current_affect
+  - target_affect
+  - music_preference
+  output: user_requested_unique_ordered_tracks_or_explicit_failure
+device: cuda
+backbone:
+  model: CLaMP3-SAAS
+  checkpoint: artifacts/models/clamp3.pt
+  checkpoint_sha256: 5033f868e3977be3945ee416b5a1718d5589a173c7ba8982231d8c94a6441d80
+  text_model: FacebookAI/xlm-roberta-base
+  embedding_dim: 768
+  max_text_length: 128
+  frozen: true
+retriever:
+  model: Ours
+  checkpoint: artifacts/runs/semantic_preservation_20260914/preserved_multiview/seed_42/best.pt
+  checkpoint_sha256: e8bb215b7dcbfb644d6899d23cbcdb0c7511f76aad5bb1b5cb41e398e049dd6e
+  bottleneck_dim: 64
+  dropout: 0.1
+  initial_adapter_scale: 0.1
+  factor_weights:
+  - 0.25
+  - 0.4
+  - 0.35
+  top_per_route: 100
+  selected_seed: 42
+  selection_basis: factorwise_balanced_validation_only
+  semantic_output_blend: 0.2
+  training_runs: artifacts/runs/semantic_preservation_20260914/preserved_multiview
+catalog:
+  music: artifacts/catalog/current_route_20260915/music.npz
+  music_sha256: b246a369c45d33d3023e1edefe249943b61405b31432fc750f7e52f198e60505
+  factor_track_ids: artifacts/catalog/current_route_20260915/factor_track_ids.npy
+  factor_track_ids_sha256: 89dec3ff89632ef8130c0f0f24f1577f19fe7a36e3f3ed0bcca51d910a98ee1d
+  metadata: artifacts/catalog/current_route_20260915/metadata.npz
+  metadata_sha256: 6ffdf2d8be67841a489e651581e783040b0e04526d96d94cc3f959a74dd3d9f6
+  factors:
+    semantic:
+      path: artifacts/catalog/current_route_20260915/semantic.npy
+      sha256: e0a7f7dd61ae49c01fc1aa29620717c5ff99d5b7d90655e1aee24afeb631d297
+    affect:
+      path: artifacts/catalog/current_route_20260915/affect.npy
+      sha256: ef1878279479b0b6d522323349f69fe77c6c8177407d2b822836387de9a0ad41
+    preference:
+      path: artifacts/catalog/current_route_20260915/preference.npy
+      sha256: 819ec0e75ee228d2fb891e0893156edce38c48a34e3115ba58165705a417fc91
+affect_direction:
+  public_terms: artifacts/catalog/affect_terms.npz
+  public_terms_sha256: a93d0302b432063916ae225e38672d846db635c91e258ea7383c261811a8f9bf
+  unknown_text_fallback: emobank_text_va
+endpoint:
+  start_top: 20
+  target_top: 20
+  allow_overlap: true
+run_id: route2_uncertainty_20260926
+query_parser:
+  model: qwen3:4b
+  base_url: http://127.0.0.1:11434
+  expected_digest: 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+  strict_digest: true
+  timeout_seconds: 120
+  seed: 42
+  frozen: true
+  missing_target: calm_explicit_default
+  missing_preference: no_preference_constraint
+text_va:
+  checkpoint: artifacts/runs/current_route_20260915/text_va/seed_44/best.pt
+  checkpoint_sha256: c53e4c8f7eed69649779a4cdc9282cc580ebb9fee8900b811ee3e1cc68713de9
+  selected_seed: 44
+  selection_basis: validation_mean_ccc_only
+  input: selected_frozen_text_affect_adapter
+  target_scale:
+  - -1
+  - 1
+route2:
+  model: joint_axis_cqr_quantile_regressor
+  checkpoint: artifacts/runs/route2_uncertainty_20260926/music_va_quantiles/seed_44/best.pt
+  checkpoint_sha256: 2ac2f602d051501df8438e4d04cfcc64c6b99bb6bc97234432ad8b900fc3461c
+  calibration: artifacts/runs/route2_uncertainty_20260926/music_va_quantiles/seed_44/calibration.json
+  calibration_sha256: bb52d03c8c43d7504b228e64a486e02b10c3472aa781b30cdcc18a972154d233
+  calibration_alpha: 0.1
+  default_tracks: 5
+  max_tracks: 20
+  lambda_retrieval: 1.0
+  beam_width: 50
+  selection_basis: policy_split_minimax_normalized_regret_220_common_successful_requests
+  search: length_conditioned_full_path_interval_dp_with_beam

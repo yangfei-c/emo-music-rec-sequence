@@ -16,10 +16,10 @@ sys.path.insert(0, str(ROOT / "src"))
 from emomm_sequence.training.records import write_json
 
 
-SOURCE = ROOT / "results/mtg_mapped_final_test_20260914/test_execution.json"
-MAPPING = ROOT / "results/mtg_label_audit_20260914/mapping.csv"
-OUTPUT_JSON = ROOT / "results/mtg_mapped_final_test_20260914/label_analysis.json"
-OUTPUT_CSV = ROOT / "results/mtg_mapped_final_test_20260914/label_analysis.csv"
+SOURCE = ROOT / "artifacts/runs/mtg_mapped_final_test_20260914/evaluation/test_execution.json"
+MAPPING = ROOT / "artifacts/runs/mtg_label_audit_20260914/evaluation/mapping.csv"
+OUTPUT_JSON = ROOT / "artifacts/runs/mtg_mapped_final_test_20260914/evaluation/label_analysis.json"
+OUTPUT_CSV = ROOT / "artifacts/runs/mtg_mapped_final_test_20260914/evaluation/label_analysis.csv"
 METRICS = ("ndcg_at_10", "average_precision", "roc_auc", "precision_at_10", "recall_at_10")
 
 

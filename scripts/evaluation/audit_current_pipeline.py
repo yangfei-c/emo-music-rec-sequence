@@ -14,7 +14,8 @@ import torch
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from emomm_sequence.encoding.clamp3 import Clamp3TextAudioEncoder, collate_audio_tokens, load_audio_tokens
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.data.paths import resolve_feature_path
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.utilities import load_yaml
 
@@ -58,7 +59,7 @@ def audit_encoder(output: Path) -> dict:
     sample = frame.iloc[0]
     tokenizer = model.tokenizer(cfg["text_model"])
     text = module.encode_texts([sample["text"]], model, tokenizer, device, 8, cfg["max_text_length"])
-    tokens = load_audio_tokens(Path(sample["feature_path"]))
+    tokens = load_audio_tokens(resolve_feature_path(sample["feature_path"]))
     audio_batch, mask = collate_audio_tokens([tokens])
     with torch.inference_mode():
         audio = torch.nn.functional.normalize(model.encode_audio(audio_batch.to(device), mask.to(device)), dim=-1).cpu().numpy()
@@ -74,10 +75,10 @@ def audit_encoder(output: Path) -> dict:
     np.savez_compressed(output / "feature_roundtrip.npz", text=text, audio=audio)
     result = {"real_sample": sample["global_identity"], "text_shape": list(text.shape), "audio_shape": list(audio.shape),
             "cached_training_feature_max_absolute_errors": errors, "backbone_frozen": True,
-            "mert_tokens_path": sample["feature_path"], "audio_path": sample["audio_path"]}
+            "mert_tokens_path": resolve_feature_path(sample["feature_path"]).as_posix(), "audio_path": sample["audio_path"]}
     strict_tokens = output / "mert_strict_roundtrip.npy"
     if strict_tokens.is_file():
-        raw, cached = np.load(strict_tokens), np.load(sample["feature_path"])
+        raw, cached = np.load(strict_tokens), np.load(resolve_feature_path(sample["feature_path"]))
         error = float(np.abs(raw - cached).max())
         assert error < 1e-4, "Raw audio tokens disagree with the declared training input"
         result["raw_mert_reextraction"] = {"shape": list(raw.shape), "max_absolute_error": error,
@@ -87,7 +88,7 @@ def audit_encoder(output: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT / "results/current_route_20260915")
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/runs/current_route_20260915/evaluation")
     parser.add_argument("--skip-encoder", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)

@@ -24,6 +24,7 @@ from emomm_sequence.encoding.clamp3 import (
     collate_audio_tokens,
     load_audio_tokens,
 )
+from emomm_sequence.data.paths import resolve_feature_path
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.utilities import load_yaml
 
@@ -98,7 +99,7 @@ def main() -> None:
     ):
         batch = frame.iloc[start : start + batch_size]
         tokens = [
-            load_audio_tokens(resolve(path), max_length=max_length)
+            load_audio_tokens(resolve_feature_path(path), max_length=max_length)
             for path in batch["feature_path"].astype(str)
         ]
         values, mask = collate_audio_tokens(tokens)

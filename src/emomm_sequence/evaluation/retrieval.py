@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from sklearn.metrics import roc_auc_score
 
-from emomm_sequence.retrieval.model import RetrieverModel
+from emomm_sequence.models.retriever import RetrieverModel
 from emomm_sequence.retrieval.factorization import mean_positive_label_embedding
 
 

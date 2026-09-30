@@ -4,7 +4,7 @@ import pytest
 import torch
 from torch.nn import functional as F
 
-from emomm_sequence.retrieval.model import ClipStyleAdapter, RetrieverModel
+from emomm_sequence.models.retriever import ClipStyleAdapter, RetrieverModel
 from emomm_sequence.training.selection import (
     retrieval_selection_score,
     tag_balanced_selection_score,

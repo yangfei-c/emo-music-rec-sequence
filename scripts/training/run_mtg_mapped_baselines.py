@@ -22,17 +22,17 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from emomm_sequence.evaluation.retrieval import label_to_track_metrics
-from emomm_sequence.retrieval.model import RetrieverModel
+from emomm_sequence.models.retriever import RetrieverModel
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.selection import tag_balanced_selection_score
 from emomm_sequence.training.utilities import set_seed
 
 
 RUN_ID = "mtg_mapped_baselines_20260914"
-REPORT = ROOT / "results" / RUN_ID
+REPORT = ROOT / "artifacts/runs" / RUN_ID / "evaluation"
 RUNS = ROOT / "artifacts/runs" / RUN_ID
 MAPPED = ROOT / "artifacts/features/clamp3/clean/mtg_factor_supervision_mapped.npz"
-QWEN = ROOT / "results/diagnosis_20260914_tower_freeze/query_form_embeddings.npz"
+QWEN = ROOT / "artifacts/runs/diagnosis_20260914_tower_freeze/evaluation/query_form_embeddings.npz"
 SEEDS = (133, 134, 135)
 PROBE_EPOCHS = 12
 TRIPLET_EPOCHS = 8

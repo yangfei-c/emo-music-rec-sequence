@@ -1,7 +1,7 @@
 // Local-only browser QA. Does not submit playback or human feedback.
 import fs from 'node:fs/promises';
 import path from 'node:path';
-const output = path.resolve('results/retraining_20260911/web_qa');
+const output = path.resolve('artifacts/runs/retraining_20260911/evaluation/web_qa');
 await fs.mkdir(output, {recursive:true});
 const tab = await (await fetch('http://127.0.0.1:9223/json/new?about:blank', {method:'PUT'})).json();
 const ws = new WebSocket(tab.webSocketDebuggerUrl);

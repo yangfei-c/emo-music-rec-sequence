@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
-from emomm_sequence.query import NaturalLanguageQueryParser, QueryParsingError
+from emomm_sequence.inference.query import NaturalLanguageQueryParser, QueryParsingError
 from emomm_sequence.training.records import write_json
 
 CASES = [
@@ -28,7 +28,7 @@ def main():
             row = {"input": text, "status": "needs_clarification", "error": str(error)}
         rows.append(row)
         print(json.dumps(row, ensure_ascii=True), flush=True)
-    write_json(ROOT / "results/current_route_20260915/query_parser_smoke.json", {"test_type": "six_disclosed_smoke_examples_not_accuracy_estimate", "cases": rows})
+    write_json(ROOT / "artifacts/runs/route2_uncertainty_20260926/evaluation/query_parser_smoke.json", {"test_type": "six_disclosed_smoke_examples_not_accuracy_estimate", "cases": rows})
 
 
 if __name__ == "__main__":

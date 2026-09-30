@@ -2,7 +2,7 @@ name: Ours semantic preservation experiment
 protocol_version: 2026-09-14
 base_training_config: configs/training/retriever.yaml
 output_root: artifacts/runs/semantic_preservation_20260914
-generated_config_root: results/semantic_preservation_20260914/configs
+generated_config_root: artifacts/runs/semantic_preservation_20260914/evaluation/configs
 
 # Stage 1 is validation-only.  It isolates geometry preservation and then adds
 # train-only lyric views; Song Describer remains external test-only throughout.

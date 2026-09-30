@@ -14,7 +14,7 @@ import uvicorn
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT.parent / "EmoMM-Web/backend"))
-from emomm_sequence.runtime import EmoMMSequenceRuntime
+from emomm_sequence.inference.runtime import EmoMMSequenceRuntime
 from emomm_sequence.training.records import write_json
 from app.main import create_app
 from app import dependencies, routes
@@ -51,8 +51,8 @@ class LocalClient:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/system.yaml")
-    parser.add_argument("--output", type=Path, default=ROOT / "results/current_route_20260915")
+    parser.add_argument("--config", default="configs/system_route2.yaml")
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/runs/route2_uncertainty_20260926/evaluation")
     parser.add_argument("--check-first-work", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)

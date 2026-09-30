@@ -16,14 +16,14 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from emomm_sequence.encoder import FrozenTextEncoder
+from emomm_sequence.encoding.text import FrozenTextEncoder
 from emomm_sequence.evaluation.retrieval import label_to_track_metrics
-from emomm_sequence.query import NaturalLanguageQueryParser
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.inference.query import NaturalLanguageQueryParser
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import sha256, write_json
 
 
-DIAGNOSIS = ROOT / "results/diagnosis_20260914_tower_freeze"
+DIAGNOSIS = ROOT / "artifacts/runs/diagnosis_20260914_tower_freeze/evaluation"
 RUNS = ROOT / "artifacts/runs/diagnosis_20260914_tower_freeze"
 REQUESTS = DIAGNOSIS / "query_forms.json"
 EMBEDDINGS = DIAGNOSIS / "query_form_embeddings.npz"

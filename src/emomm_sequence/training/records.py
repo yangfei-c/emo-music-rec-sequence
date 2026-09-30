@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import platform
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -35,7 +36,16 @@ def write_json(path: Path, value: dict | list) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
-    temporary.replace(path)
+    # Windows readers without FILE_SHARE_DELETE can briefly block replacement.
+    # Keep the previous complete JSON visible and bound retries for real ACL errors.
+    for attempt in range(10):
+        try:
+            temporary.replace(path)
+            return
+        except OSError as exc:
+            if getattr(exc, "winerror", None) not in {5, 32, 33} or attempt == 9:
+                raise
+            time.sleep(min(0.05 * 2 ** attempt, 0.5))
 
 
 def environment() -> dict:

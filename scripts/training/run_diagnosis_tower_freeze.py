@@ -18,15 +18,15 @@ from torch.utils.data import DataLoader, TensorDataset
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from emomm_sequence.evaluation.retrieval import label_to_track_metrics
-from emomm_sequence.retrieval.model import RetrieverModel
-from emomm_sequence.retrieval.objectives import multi_positive_cross_entropy
+from emomm_sequence.models.retriever import RetrieverModel
+from emomm_sequence.losses.retrieval import multi_positive_cross_entropy
 from emomm_sequence.training.records import sha256, write_json
 from emomm_sequence.training.selection import tag_balanced_selection_score
 from emomm_sequence.training.utilities import set_seed
 
 
 RUN_ID = "diagnosis_20260914_tower_freeze"
-REPORT = ROOT / "results" / RUN_ID
+REPORT = ROOT / "artifacts/runs" / RUN_ID / "evaluation"
 RUNS = ROOT / "artifacts/runs" / RUN_ID
 SEEDS = (133, 134, 135)
 VARIANTS = {

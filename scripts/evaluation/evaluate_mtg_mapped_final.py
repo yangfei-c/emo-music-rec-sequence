@@ -25,16 +25,16 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from emomm_sequence.evaluation.retrieval import label_to_track_metrics
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import sha256, write_json
 
 
 RUN_ID = "mtg_mapped_final_test_20260914"
-OUTPUT = ROOT / "results" / RUN_ID
+OUTPUT = ROOT / "artifacts/runs" / RUN_ID / "evaluation"
 MAPPED = ROOT / "artifacts/features/clamp3/clean/mtg_factor_supervision_mapped.npz"
-QWEN = ROOT / "results/diagnosis_20260914_tower_freeze/query_form_embeddings.npz"
-ALIGNMENT = ROOT / "results/diagnosis_20260914_query_alignment/execution.json"
-BASELINES = ROOT / "results/mtg_mapped_baselines_20260914/execution.json"
+QWEN = ROOT / "artifacts/runs/diagnosis_20260914_tower_freeze/evaluation/query_form_embeddings.npz"
+ALIGNMENT = ROOT / "artifacts/runs/diagnosis_20260914_query_alignment/evaluation/execution.json"
+BASELINES = ROOT / "artifacts/runs/mtg_mapped_baselines_20260914/evaluation/execution.json"
 CONFIG = ROOT / "configs/training/retriever.yaml"
 SELECTED_VARIANT = "mapped_three_view"
 METRICS = (

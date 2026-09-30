@@ -143,7 +143,7 @@ def main() -> None:
         default=Path("artifacts/features/clamp3/clean/mtg_factor_supervision_clean.npz"),
     )
     parser.add_argument(
-        "--output-dir", type=Path, default=Path("results/mtg_label_audit_20260914")
+        "--output-dir", type=Path, default=Path("artifacts/runs/mtg_label_audit_20260914/evaluation")
     )
     args = parser.parse_args()
     source = resolve(args.input)

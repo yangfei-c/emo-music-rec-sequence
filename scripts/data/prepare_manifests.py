@@ -247,17 +247,22 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=ROOT / "configs" / "data.yaml")
     parser.add_argument("--datasets", nargs="+", choices=("text_emobank", "music_deam", "music_pmemo", "pairs_merge", "pairs_song_describer"))
+    parser.add_argument("--overwrite", action="store_true", help="Replace existing manifests and their experiment hashes")
     args = parser.parse_args()
     config = load_yaml(args.config)
     paths = config["paths"]
     output = ROOT / paths["manifest_dir"]
     output.mkdir(parents=True, exist_ok=True)
+    selected = args.datasets or ("text_emobank", "music_deam", "music_pmemo", "pairs_merge", "pairs_song_describer")
+    existing = [output / f"{name}.csv" for name in selected if (output / f"{name}.csv").exists()]
+    if existing and not args.overwrite:
+        raise FileExistsError(f"Existing manifests would change experiment hashes: {existing}. Pass --overwrite deliberately.")
     builders = {
         "text_emobank": lambda: emobank_manifest(ROOT / paths["emobank"]),
         "music_deam": lambda: music_va_manifest("deam", paths),
         "music_pmemo": lambda: music_va_manifest("pmemo", paths),
         "pairs_merge": lambda: merge_manifest(
-            ROOT / paths["merge_root"], ROOT / "features" / "mert_clamp3" / "merge"
+            ROOT / paths["merge_root"], ROOT / "artifacts" / "features" / "mert_clamp3" / "merge"
         ),
         "pairs_song_describer": lambda: song_describer_manifest(
             ROOT / paths["song_describer_root"],

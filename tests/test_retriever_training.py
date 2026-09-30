@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 import torch
 
-from emomm_sequence.retrieval.model import RetrieverModel, FACTORS, ResidualAdapter
-from emomm_sequence.retrieval.objectives import (
+from emomm_sequence.models.retriever import RetrieverModel, FACTORS, ResidualAdapter
+from emomm_sequence.losses.retrieval import (
     AdaptiveAsymmetryController,
     asymmetric_loss_with_logits,
     circle_pair_similarity_loss,

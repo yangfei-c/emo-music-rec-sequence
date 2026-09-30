@@ -10,3 +10,4 @@ nnAudio>=0.3
 tqdm>=4.66
 requests>=2.32
 pytest==8.3.5
+psutil>=5.9

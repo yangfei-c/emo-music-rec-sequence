@@ -18,7 +18,7 @@ if str(SRC) not in sys.path:
 
 from emomm_sequence.evaluation.pairs import grouped_retrieval_metrics_from_scores
 from emomm_sequence.retrieval.segments import query_conditioned_segment_similarity
-from emomm_sequence.retriever import FrozenRetriever
+from emomm_sequence.models.frozen_retriever import FrozenRetriever
 from emomm_sequence.training.records import sha256, write_json
 
 
