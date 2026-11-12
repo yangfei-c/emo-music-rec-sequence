@@ -1,0 +1,33 @@
+# Python 缓存和本地虚拟环境
+__pycache__/
+*.py[cod]
+.pytest_cache/
+/.venv/
+/venv/
+
+# 本地 IDE 设置和环境变量
+/.idea/
+/.vscode/
+.env
+.env.*
+!.env.example
+
+# 本地数据、提取特征和模型权重
+/data/
+/datasets/
+/assets/features/
+/assets/models/
+/checkpoints/
+/model_weights/
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# 实验产物和系统文件
+/runs/
+*.log
+.DS_Store
+Thumbs.db

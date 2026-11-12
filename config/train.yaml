@@ -1,0 +1,74 @@
+# latest 仅查找新项目中成功完成的特征提取；也可填写明确的 feature_id。
+feature_id: latest
+run_id: auto
+device: cuda
+seeds: [42, 43, 44]
+num_threads: 4
+# 同一音频跨划分：保留 test，其次 validation；排除较低优先级记录，不重新分配划分。
+duplicate_audio_policy: exclude_lower_priority_split
+outputs: runs/train
+three_branch:
+  # 默认执行四组：冻结 CLaMP3、Adapter、残差 Adapter＋语义保持、相同方案＋A/P 多表达。
+  # 训练共用全文＋歌词片段、划分、种子与优化器。
+  # 下列 model/loss 定义 residual_distill；普通 Adapter 组固定取消 S 混合与蒸馏。
+  # ap_multiview 只把 A/P 单提示换成每标签4种等义表达，每步随机1种，损失/步数不增。
+  # 新标签文本由 train.py 自动补提取并缓存；原始提示用于统一选模，不给 A/P 加蒸馏。
+  model:
+    embedding_dim: 768
+    bottleneck_dim: 64
+    dropout: 0.1
+    initial_adapter_scale: 0.1
+    initial_temperature: 0.07
+    semantic_output_blend: 0.2
+    affect_output_blend: 1.0
+    preference_output_blend: 1.0
+  loss:
+    semantic_weight: 1.0
+    semantic_distillation_weight: 0.5
+    semantic_distillation_temperature: 0.07
+    preference_weight: 1.0
+    affect_tag_weight: 1.0
+    preference_label_to_track_weight: 0.5
+    affect_label_to_track_weight: 0.5
+  training:
+    max_epochs: 25
+    early_stopping_patience: 10
+    early_stopping_min_delta: 0.0005
+    batch_size_pairs: 128
+    batch_size_mtg: 256
+    learning_rate: 0.0003
+    semantic_learning_rate: 0.0003
+    weight_decay: 0.0001
+    gradient_clip_norm: 1.0
+    amp: true
+  evaluation:
+    retrieval_ks: [1, 5, 10]
+    tag_ks: [5, 10, 20]
+text_va:
+  # 冻结 CLaMP3 文本向量直接回归 VA；独立训练，不经过 A、不加载三分支权重。
+  model:
+    embedding_dim: 768
+  training:
+    max_epochs: 60
+    batch_size: 128
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    gradient_clip_norm: 1.0
+    early_stopping_patience: 10
+    early_stopping_min_delta: 0.0001
+    huber_beta: 0.1
+    ccc_weight: 0.1
+music_va:
+  model:
+    embedding_dim: 768
+    hidden_dim: 128
+    dropout: 0.1
+  training:
+    max_epochs: 30
+    batch_size: 256
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    gradient_clip_norm: 1.0
+    early_stopping_patience: 5
+    early_stopping_min_delta: 0.0001
+    source_balanced_sampling: true

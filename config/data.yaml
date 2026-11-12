@@ -1,0 +1,55 @@
+# 使用 msmmr 环境。原始数据只读；特征全部重新提取。
+device: cuda
+local_files_only: true
+feature_id: auto
+datasets: [text_emobank, music_deam, music_pmemo, pairs_merge, mtg_music, mtg_tags, pairs_song_describer]
+clamp3:
+  checkpoint: D:/AAAAAAAAAA_emotion/Code/EmoMM-Sequence/model_weights/clamp3.pt
+  checkpoint_sha256: 5033f868e3977be3945ee416b5a1718d5589a173c7ba8982231d8c94a6441d80
+  text_model: FacebookAI/xlm-roberta-base
+  embedding_dim: 768
+  max_text_length: 128
+  max_audio_length: 128
+  batch_size_text: 32
+mert:
+  model: m-a-p/MERT-v1-95M
+  revision: 12af15fef9d0ac838c3f475bfbbf26d2060dd4f5
+  sample_rate: 24000
+  chunk_seconds: 5
+  chunk_batch_size: 4
+  # 每首音频取开头、中间、结尾各 30 秒；短于 30 秒时使用整首。
+  window_policy: front_middle_end
+  window_seconds: 30
+sources:
+  emobank:
+    csv: D:/AAAAAAA_dataset/text/english/emobank.csv
+    source_scale: [1, 5]
+    split_source: official_csv_split_column
+  deam:
+    audio: D:/AAAAAAA_dataset/audio/deam/mp3
+    annotations: D:/AAAAAAA_dataset/audio/deam/meta/static_annotations.csv
+    splits: D:/AAAAAAA_dataset/audio/deam/meta/split
+    source_scale: [1, 9]
+    split_source: supplied_local_split_files
+  pmemo:
+    audio: D:/AAAAAAA_dataset/audio/pmemo/mp3
+    annotations: D:/AAAAAAA_dataset/audio/pmemo/meta/static_annotations.csv
+    splits: D:/AAAAAAA_dataset/audio/pmemo/meta/split
+    source_scale: [1, 9]
+    split_source: supplied_local_split_files
+  merge:
+    root: D:/AAAAAAA_dataset/audio/merge/extracted/MERGE_Bimodal_Complete
+    split_source: bundled_tvt_70_15_15
+  mtg:
+    audio: D:/AAAAAAA_dataset/audio/mtg-jamendo/audio
+    splits: D:/AAAAAAA_dataset/audio/mtg-jamendo/splits/split-0/TSV
+    split_source: official_artist_split_0
+    missing_audio: skip_and_report
+    min_train_tracks_per_label: 20
+    min_train_artists_per_label: 5
+  song_describer:
+    csv: D:/AAAAAAA_dataset/audio/song_describer/song_describer.csv
+    split_source: corresponding_official_mtg_track_split
+outputs:
+  features: assets/features/clamp3
+  records: runs/extract
